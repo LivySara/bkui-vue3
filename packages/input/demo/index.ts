@@ -91,6 +91,11 @@ const presets = [
 // 组件属性，用来自动生成属性文档
 const props = [
   {
+    name: 'v-model',
+    description: '输入框的值',
+    type: 'string',
+  },
+  {
     name: 'type',
     description: '输入框类型',
     type: 'string',

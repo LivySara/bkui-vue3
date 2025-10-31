@@ -9,6 +9,27 @@ export const isBasicTypeArr = (type: string) => {
   return basicTypes.includes(type.toLowerCase());
 }
 
+export const extractArrayGeneric = (type: string): string | null => {
+  const match = type.match(/^Array\s*<(.+?)>$/)
+  if (match && match[1]) {
+    return match[1].trim()
+  }
+  return null
+}
+
+export const isGenericArrType = (type: string) => {
+  return /^Array<[^>]+>$/.test(type)
+}
+
+export const isArrayTypeLiteral = (type: string, isComplexType: boolean) => {
+  if(/\[\]$/.test(type)) {
+    if(isComplexType || isBasicTypeArr(type)) {
+      return true
+    }
+  }
+  return false
+}
+
 export const factType = (type: string, options: IComponentWiki['props'][number]['options'], complexTypes: IComponentWiki['types']) => {
   const basicType = type.toLowerCase();
   if(basicType === 'boolean') {
@@ -27,7 +48,7 @@ export const factType = (type: string, options: IComponentWiki['props'][number][
     return 'enum';
   }
   const isComplexType = complexTypes?.some(item => item.name === type);
-  if(/\[\]$/.test(type) && (isComplexType || isBasicTypeArr(type))) {
+  if(isGenericArrType(type, complexTypes) || isArrayTypeLiteral(type, isComplexType)) {
     return 'array';
   }
   if(isComplexType) {
